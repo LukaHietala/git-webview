@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h2>Login</h2>
+    <nav>
+        <a href="/">Back</a>
+    </nav>
+    <hr>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p><strong>{{ message }}</strong></p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/login">
+        <p>
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required autofocus>
+        </p>
+
+        <p>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required>
+        </p>
+
+        <p>
+            <button type="submit">Login</button>
+            <a href="/">Cancel</a>
+        </p>
+    </form>
+</body>
+</html>

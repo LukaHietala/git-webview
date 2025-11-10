@@ -6,7 +6,15 @@
 </head>
 <body>
     <h2>Repositories</h2>
-        <a href="/create">Create new</a>
+    <nav>
+        {% if session.username %}
+            <span>Logged in as: <strong>{{ session.username }}</strong></span> | 
+            <a href="/create">Create new</a> | 
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+        {% endif %}
+    </nav>
     <hr>
 
     {% if repos %}

@@ -1,10 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from functools import wraps
 from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo
 from pathlib import Path
 from datetime import datetime
+from db import init_db, verify_user
 
 app = Flask(__name__)
-app.secret_key = '1234'
+app.secret_key = '1234' # safe
+
+init_db()
+
+def login_required(f):
+    @wraps(f)
+    def check_login(*args, **kwargs):
+        if 'username' not in session:
+            flash('log in to access this page', 'error')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return check_login
 
 repoRoot = Path("/home/lhietala/git-webview/repos-example")
 
@@ -111,6 +124,7 @@ def blob(repo_name, blob_path):
                            ref=ref)
 
 @app.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_repo():
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
@@ -135,6 +149,26 @@ def create_repo():
             return render_template('create_repo.html', name=name, description=description)
     
     return render_template('create_repo.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        
+        if verify_user(username, password):
+            session['username'] = username
+            return redirect(url_for('index'))
+        else:
+            flash('invalid username or password', 'error')
+            return render_template('login.html')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run()

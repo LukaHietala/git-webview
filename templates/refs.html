@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ repo_name }} - Refs{% endblock %}
+
+{% block content %}
+<h2>References</h2>
+
+<h3>Branches</h3>
+{% if branches %}
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Commit</td>
+            <td>Message</td>
+            <td>Date</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for branch in branches %}
+        <tr>
+            <td><strong>{{ branch.name }}</strong></td>
+            <td>
+                <a href="/{{ repo_name }}/commit/{{ branch.commit }}">{{ branch.commit[:8] }}</a>
+            </td>
+            <td>{{ branch.message }}</td>
+            <td>{{ branch.date | datetime }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No branches</p>
+{% endif %}
+
+<h3>Tags</h3>
+{% if tags %}
+<table>
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Commit</td>
+            <td>Message</td>
+            <td>Date</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tag in tags %}
+        <tr>
+            <td><strong>{{ tag.name }}</strong></td>
+            <td>
+                <a href="/{{ repo_name }}/commit/{{ tag.commit }}">{{ tag.commit[:8] }}</a>
+            </td>
+            <td>{{ tag.message }}</td>
+            <td>{{ tag.date | datetime }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No tags </p>
+{% endif %}
+{% endblock %}

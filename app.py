@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from util import get_readme, get_repos, get_commits, get_commit
+from util import get_readme, get_repos, get_commits, get_commit, get_refs
 from pathlib import Path
 from datetime import datetime
 
@@ -59,6 +59,15 @@ def commit(repo_name, commit_hash):
                            repo_name=repo_name, 
                            commit=commit["commit"],
                            diffs=commit["diffs"])
+
+@app.route("/<repo_name>/refs")
+def refs(repo_name):
+    refs = get_refs(str(repoRoot / repo_name))
+    
+    return render_template("refs.html", 
+                           repo_name=repo_name, 
+                           branches=refs["branches"],
+                           tags=refs["tags"])
 
 if __name__ == "__main__":
     app.run()

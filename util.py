@@ -121,3 +121,38 @@ def get_commit(repo_path=None, commit_hash=None):
     except Exception as e:
         print(f"error reading commit: {e}")
         return None
+    
+def get_refs(repo_path=None):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare:
+            return {"branches": [], "tags": []}
+        
+        branches = []
+        tags = []
+        
+        # branches
+        for head in repo.heads:
+            branches.append({
+                "name": head.name,
+                "commit": head.commit.hexsha,
+                "date": head.commit.committed_datetime,
+                "message": head.commit.message.strip()
+            })
+        
+        # tags
+        for tag in repo.tags:
+            tag_commit = tag.commit
+            tags.append({
+                "name": tag.name,
+                "commit": tag_commit.hexsha,
+                "date": tag_commit.committed_datetime,
+                "message": tag_commit.message.strip()
+            })
+        
+        return {"branches": branches, "tags": tags}
+        
+    except Exception as e:
+        print(f"error reading refs: {e}")
+        return {"branches": [], "tags": []}

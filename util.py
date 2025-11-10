@@ -67,3 +67,25 @@ def get_readme(repo_path=None):
     except Exception as e:
         print(f"error reading readme: {e}")
         return None
+
+def get_commits(repo_path=None, max_count=20):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare:
+            return []
+        
+        commits = []
+        for commit in repo.iter_commits('HEAD', max_count=max_count):
+            commits.append({
+                "hexsha": commit.hexsha,
+                "author": commit.author.name,
+                "date": commit.committed_datetime,
+                "message": commit.message.strip()
+            })
+        
+        return commits
+        
+    except Exception as e:
+        print(f"error reading commits: {e}")
+        return []

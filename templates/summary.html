@@ -1,0 +1,21 @@
+
+<table>
+    <thead>
+        <tr>
+            <th>Hash</th>
+            <th>Message</th>
+            <th>Author</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for commit in commits %}
+        <tr>
+            <td>{{ commit.hexsha[:7] }}</td>
+            <td>{{ commit.message }}</td>
+            <td>{{ commit.author }}</td>
+            <td>{{ commit.date.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -9,16 +9,16 @@
 <table>
     <thead>
         <tr>
-            <th>Hash</th>
-            <th>Message</th>
-            <th>Author</th>
-            <th>Date</th>
+            <td>Hash</td>
+            <td>Message</td>
+            <td>Author</td>
+            <td>Date</td>
         </tr>
     </thead>
     <tbody>
         {% for commit in commits %}
         <tr>
-            <td>{{ commit.hexsha[:7] }}</td>
+            <td>{{ commit.hexsha[:8] }}</td>
             <td>{{ commit.message }}</td>
             <td>{{ commit.author }}</td>
             <td>{{ commit.date.strftime('%Y-%m-%d %H:%M') }}</td>

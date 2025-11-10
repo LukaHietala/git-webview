@@ -68,7 +68,7 @@ def get_readme(repo_path=None):
         print(f"error reading readme: {e}")
         return None
 
-def get_commits(repo_path=None, max_count=20):
+def get_commits(repo_path=None, max_count=20, skip=0):
     try:
         repo = git.Repo(repo_path)
         
@@ -76,7 +76,7 @@ def get_commits(repo_path=None, max_count=20):
             return []
         
         commits = []
-        for commit in repo.iter_commits('HEAD', max_count=max_count):
+        for commit in repo.iter_commits('HEAD', max_count=max_count, skip=skip):
             commits.append({
                 "hexsha": commit.hexsha,
                 "author": commit.author.name,

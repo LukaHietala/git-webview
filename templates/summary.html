@@ -1,4 +1,11 @@
 
+{% extends "base.html" %}
+
+{% block title %}{{ repo_name }} - Summary{% endblock %}
+
+{% block content %}
+<h2>Commits</h2>
+
 <table>
     <thead>
         <tr>
@@ -19,3 +26,4 @@
         {% endfor %}
     </tbody>
 </table>
+{% endblock %}

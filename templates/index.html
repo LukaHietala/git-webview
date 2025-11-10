@@ -1,22 +1,30 @@
-<h2>Repositories</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Git Webview</title>
+</head>
+<body>
+    <h2>Repositories</h2>
 
-{% if repos %}
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for repo in repos %}
-        <tr>
-            <td><a href="/{{ repo.name }}/about">{{ repo.name }}</a></td>
-            <td>{{ repo.description }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No repositories found</p>
-{% endif %}
+    {% if repos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repo in repos %}
+            <tr>
+                <td><a href="/{{ repo.name }}/about">{{ repo.name }}</a></td>
+                <td>{{ repo.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No repositories found</p>
+    {% endif %}
+</body>
+</html>

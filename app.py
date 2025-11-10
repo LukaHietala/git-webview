@@ -14,7 +14,7 @@ def index():
 @app.route("/<repo_name>/about")
 def about(repo_name):
     readme = get_readme(str(repoRoot / repo_name))
-    return render_template("about.html", readme=readme)
+    return render_template("about.html", repo_name=repo_name, readme=readme)
 
 @app.route("/<repo_name>/")
 def summary(repo_name):

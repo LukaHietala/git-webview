@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Git Webview{% endblock %}</title>
+</head>
+<body>
+    {% if repo_name %}
+    <h1>{{ repo_name }}</h1>
+    <nav>
+        <a href="/">Repos</a> |
+        <a href="/{{ repo_name }}/about">About</a> |
+        <a href="/{{ repo_name }}/">Summary</a>
+    </nav>
+    <hr>
+    {% endif %}
+    
+    {% block content %}{% endblock %}
+</body>
+</html>

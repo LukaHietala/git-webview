@@ -1,0 +1,22 @@
+<h2>Repositories</h2>
+
+{% if repos %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for repo in repos %}
+        <tr>
+            <td><a href="/{{ repo.name }}">{{ repo.name }}</a></td>
+            <td>{{ repo.description }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No repositories found</p>
+{% endif %}

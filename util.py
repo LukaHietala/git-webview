@@ -83,11 +83,27 @@ def get_commits(repo_path=None, max_count=20, skip=0):
         
         commits = []
         for commit in repo.iter_commits('HEAD', max_count=max_count, skip=skip):
+            # lazily calculate stats with lib
+            insertions = 0
+            deletions = 0
+            files_changed = 0
+            
+            try:
+                stats = commit.stats.total
+                insertions = stats.get('insertions', 0)
+                deletions = stats.get('deletions', 0)
+                files_changed = stats.get('files', 0)
+            except Exception as e:
+                print(f"error calculating stats for commit {commit.hexsha}: {e}")
+            
             commits.append({
                 "hexsha": commit.hexsha,
                 "author": commit.author.name,
                 "date": commit.committed_datetime,
-                "message": commit.message.strip()
+                "message": commit.message.strip(),
+                "files_changed": files_changed,
+                "insertions": insertions,
+                "deletions": deletions
             })
         
         return commits

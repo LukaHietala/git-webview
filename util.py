@@ -22,7 +22,8 @@ def get_repos(repos_path=None):
                     repo_info = {
                         "name": item.name,
                         "path": str(item.absolute()),
-                        "description": ""
+                        "description": "",
+                        "last_updated": None
                     }
                     
                     desc_file = item / "description"
@@ -35,6 +36,12 @@ def get_repos(repos_path=None):
                                 repo_info["description"] = "no description"
                         except:
                             pass
+                    
+                    try:
+                        latest_commit = repo.head.commit
+                        repo_info["last_updated"] = latest_commit.committed_datetime
+                    except:
+                        pass
                     
                     repos.append(repo_info)
             except Exception as e:

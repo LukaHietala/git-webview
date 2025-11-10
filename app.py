@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree
+from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob
 from pathlib import Path
 from datetime import datetime
 
@@ -88,6 +88,25 @@ def tree(repo_name, tree_path=""):
                            tree=tree_data,
                            path_parts=path_parts,
                            current_path=tree_path,
+                           ref=ref)
+
+@app.route('/<repo_name>/blob/<path:blob_path>')
+def blob(repo_name, blob_path):
+    ref = request.args.get('ref', 'HEAD')
+    blob = get_blob(str(repoRoot / repo_name), blob_path, ref)
+    
+    path_parts = []
+    if blob_path:
+        parts = blob_path.split('/')
+        current_path = ""
+        for i, part in enumerate(parts[:-1]):  # exclude the file name, only dirs are linked in template
+            current_path = f"{current_path}/{part}" if current_path else part
+            path_parts.append({"name": part, "path": current_path})
+    
+    return render_template("blob.html", 
+                           repo_name=repo_name,
+                           blob=blob,
+                           path_parts=path_parts,
                            ref=ref)
 
 if __name__ == "__main__":

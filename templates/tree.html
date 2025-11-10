@@ -40,7 +40,7 @@
                 {% if item.type == 'tree' %}
                     (dir) <a href="/{{ repo_name }}/tree/{{ item.path }}?ref={{ ref }}">{{ item.name }}</a>
                 {% else %}
-                    (file) {{ item.name }}
+                    (file) <a href="/{{ repo_name }}/blob/{{ item.path }}?ref={{ ref }}">{{ item.name }}</a>
                 {% endif %}
             </td>
             <td>{{ item.type }}</td>

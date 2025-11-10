@@ -194,3 +194,41 @@ def get_tree(repo_path=None, tree_path="", ref="HEAD"):
     except Exception as e:
         print(f"error reading tree: {e}")
         return None
+
+def get_blob(repo_path=None, blob_path="", ref="HEAD"):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare:
+            return None
+        
+        commit = repo.commit(ref)
+        
+        try:
+            blob = commit.tree / blob_path
+            
+            if blob.type != 'blob':
+                return None
+            
+            # try to read as text, if fails it's binary
+            try:
+                content = blob.data_stream.read().decode('utf-8')
+                is_binary = False
+            except UnicodeDecodeError:
+                content = blob.data_stream.read()
+                is_binary = True
+            
+            return {
+                "name": blob.name,
+                "path": blob_path,
+                "size": blob.size,
+                "content": content,
+                "is_binary": is_binary,
+                "hexsha": blob.hexsha
+            }
+        except KeyError:
+            return None
+        
+    except Exception as e:
+        print(f"error reading blob: {e}")
+        return None

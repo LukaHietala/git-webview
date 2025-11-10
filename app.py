@@ -13,16 +13,16 @@ def index():
                            repos=repos)
 
 @app.route("/<repo_name>/")
-def summary(repo_name):
+def repo_index(repo_name):
     commits = get_commits(str(repoRoot / repo_name))
-    return render_template("summary.html", 
+    return render_template("commits.html", 
                            repo_name=repo_name, 
                            commits=commits)
 
-@app.route("/<repo_name>/about")
-def about(repo_name):
+@app.route("/<repo_name>/readme")
+def readme(repo_name):
     readme = get_readme(str(repoRoot / repo_name))
-    return render_template("about.html", 
+    return render_template("readme.html", 
                            repo_name=repo_name, 
                            readme=readme)
 

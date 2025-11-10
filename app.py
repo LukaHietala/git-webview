@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request
-from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob
+from flask import Flask, render_template, request, redirect, url_for, flash
+from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo
 from pathlib import Path
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = '1234'
 
 repoRoot = Path("/home/lhietala/git-webview/repos-example")
 
@@ -108,6 +109,32 @@ def blob(repo_name, blob_path):
                            blob=blob,
                            path_parts=path_parts,
                            ref=ref)
+
+@app.route('/create', methods=['GET', 'POST'])
+def create_repo():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        description = request.form.get('description', '').strip()
+        
+        if not name:
+            flash('Repository name is required', 'error')
+            return render_template('create_repo.html')
+        
+        # TODO: proper validation
+        if '/' in name or '\\' in name or '..' in name:
+            flash('Invalid repository name', 'error')
+            return render_template('create_repo.html')
+        
+        result = create_bare_repo(str(repoRoot), name, description)
+        
+        if result['success']:
+            flash(result['message'], 'success')
+            return redirect(url_for('index'))
+        else:
+            flash(result['message'], 'error')
+            return render_template('create_repo.html', name=name, description=description)
+    
+    return render_template('create_repo.html')
 
 if __name__ == "__main__":
     app.run()

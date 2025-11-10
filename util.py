@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import git
 
@@ -248,3 +249,33 @@ def get_blob(repo_path=None, blob_path="", ref="HEAD"):
     except Exception as e:
         print(f"error reading blob: {e}")
         return None
+    
+def create_bare_repo(repo_path, name, description=""):
+    try:
+        repo_path = Path(repo_path)
+        new_repo_path = repo_path / name
+        
+        if new_repo_path.exists():
+            return {
+                "success": False,
+                "message": f"repo '{name}' already exists"
+            }
+        
+        repo = git.Repo.init(new_repo_path, bare=True)
+        
+        if description:
+            desc_file = new_repo_path / "description"
+            desc_file.write_text(description)
+        
+        return {
+            "success": True,
+            "message": f"successfully created bare repository '{name}'",
+            "path": str(new_repo_path)
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"error creating repository: {str(e)}"
+        }
+    

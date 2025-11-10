@@ -6,7 +6,6 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     repos = get_repos("/home/lhietala/git-webview/repos-example")
-    print(f"found {len(repos)} repo")
     return render_template("index.html", repos=repos)
 
 if __name__ == "__main__":

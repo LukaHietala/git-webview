@@ -29,8 +29,10 @@ def get_repos(repos_path=None):
                     if desc_file.exists():
                         try:
                             desc = desc_file.read_text().strip()
-                            if desc != "Unnamed repository; edit this file 'description' to name the repository.":
+                            if not desc.startswith("Unnamed"):
                                 repo_info["description"] = desc
+                            else:
+                                repo_info["description"] = "no description"
                         except:
                             pass
                     

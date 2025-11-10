@@ -43,3 +43,27 @@ def get_repos(repos_path=None):
     
     return repos
 
+def get_readme(repo_path=None):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare:
+            return None
+        
+        # use head, because its the latest state
+        head = repo.head.commit
+        
+        readme_names = ['README.md', 'README'] # there might be more...
+        
+        for readme_name in readme_names:
+            try:
+                blob = head.tree / readme_name
+                return blob.data_stream.read().decode('utf-8')
+            except KeyError:
+                continue
+        
+        return None
+        
+    except Exception as e:
+        print(f"error reading readme: {e}")
+        return None

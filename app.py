@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from util import get_readme, get_repos, get_commits, get_commit, get_refs
+from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree
 from pathlib import Path
 from datetime import datetime
 
@@ -68,6 +68,27 @@ def refs(repo_name):
                            repo_name=repo_name, 
                            branches=refs["branches"],
                            tags=refs["tags"])
+
+@app.route('/<repo_name>/tree')
+@app.route('/<repo_name>/tree/<path:tree_path>')
+def tree(repo_name, tree_path=""):
+    ref = request.args.get('ref', 'HEAD')
+    tree_data = get_tree(str(repoRoot / repo_name), tree_path, ref)
+    
+    path_parts = []
+    if tree_path:
+        parts = tree_path.split('/')
+        current_path = ""
+        for part in parts:
+            current_path = f"{current_path}/{part}" if current_path else part
+            path_parts.append({"name": part, "path": current_path})
+    
+    return render_template("tree.html", 
+                           repo_name=repo_name,
+                           tree=tree_data,
+                           path_parts=path_parts,
+                           current_path=tree_path,
+                           ref=ref)
 
 if __name__ == "__main__":
     app.run()

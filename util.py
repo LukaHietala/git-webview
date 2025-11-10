@@ -57,7 +57,6 @@ def get_readme(repo_path=None):
         if not repo.bare:
             return None
         
-        # use head, because its the latest state
         head = repo.head.commit
         
         readme_names = ['README.md', 'README'] # there might be more...
@@ -156,3 +155,42 @@ def get_refs(repo_path=None):
     except Exception as e:
         print(f"error reading refs: {e}")
         return {"branches": [], "tags": []}
+
+def get_tree(repo_path=None, tree_path="", ref="HEAD"):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare:
+            return None
+        
+        commit = repo.commit(ref)
+        tree = commit.tree
+        
+        if tree_path:
+            try:
+                tree = tree / tree_path
+            except KeyError:
+                return None
+        
+        entries = []
+        for item in tree:
+            item_info = {
+                "name": item.name,
+                "type": item.type,  # blob or tree
+                "path": item.path,
+                "size": item.size if item.type == 'blob' else None
+            }
+            entries.append(item_info)
+
+        # dirs -> files (all alphabetically)
+        entries.sort(key=lambda x: (x['type'] != 'tree', x['name'].lower()))
+        
+        return {
+            "entries": entries,
+            "path": tree_path,
+            "is_tree": tree.type == 'tree'
+        }
+        
+    except Exception as e:
+        print(f"error reading tree: {e}")
+        return None

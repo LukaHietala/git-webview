@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Tree - {{ repo_name }}{% endblock %}
+
+{% block content %}
+
+{% if tree %}
+<div>
+    <a href="/{{ repo_name }}/tree?ref={{ ref }}">root</a>
+    {% for part in path_parts %}
+        / <a href="/{{ repo_name }}/tree/{{ part.path }}?ref={{ ref }}">{{ part.name }}</a>
+    {% endfor %}
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Size</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if current_path %}
+        <tr>
+            <td>
+                {% if '/' in current_path %}
+                    {% set parent_path = current_path.rsplit('/', 1)[0] %}
+                    <a href="/{{ repo_name }}/tree/{{ parent_path }}?ref={{ ref }}">..</a>
+                {% else %}
+                    <a href="/{{ repo_name }}/tree?ref={{ ref }}">..</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+        <!--TODO: figure out what to use to indicate file or dir-->
+        {% for item in tree.entries %}
+        <tr>
+            <td>
+                {% if item.type == 'tree' %}
+                    (dir) <a href="/{{ repo_name }}/tree/{{ item.path }}?ref={{ ref }}">{{ item.name }}</a>
+                {% else %}
+                    (file) {{ item.name }}
+                {% endif %}
+            </td>
+            <td>{{ item.type }}</td>
+            <td>
+                {% if item.size is not none %}
+                    {{ item.size }} bytes <!--TODO: human readable-->
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No tree</p>
+{% endif %}
+{% endblock %}

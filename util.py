@@ -96,3 +96,28 @@ def get_commits(repo_path=None, max_count=20, skip=0):
     except Exception as e:
         print(f"error reading commits: {e}")
         return []
+    
+def get_commit(repo_path=None, commit_hash=None):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare:
+            return None
+        
+        commit = repo.commit(commit_hash)
+
+        if commit.parents:
+            parent = commit.parents[0]
+            diffs = parent.diff(commit, create_patch=True)
+        else:
+            # initial commit, no parents to compare to
+            diffs = commit.diff(git.NULL_TREE, create_patch=True)
+        
+        return {
+            "commit": commit,
+            "diffs": diffs
+        }
+        
+    except Exception as e:
+        print(f"error reading commit: {e}")
+        return None

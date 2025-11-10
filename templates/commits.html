@@ -18,10 +18,12 @@
     <tbody>
         {% for commit in commits %}
         <tr>
-            <td>{{ commit.hexsha[:8] }}</td>
+            <td>
+                <a href="/{{ repo_name }}/commit/{{ commit.hexsha }}">{{ commit.hexsha[:8] }}</a>
+            </td>
             <td>{{ commit.message }}</td>
             <td>{{ commit.author }}</td>
-            <td>{{ commit.date.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ commit.date | datetime }}</td>
         </tr>
         {% endfor %}
     </tbody>

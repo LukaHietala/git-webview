@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ repo_name }} - commit {{ commit.hexsha[:8] }}{% endblock %}
+
+{% block content %}
+<h2>Commit details</h2>
+
+<table>
+    <tr>
+        <th>commit</th>
+        <td class="sha">{{ commit.hexsha }}</td>
+    </tr>
+    <tr>
+        <th>author</th>
+        <td>{{ commit.author.name }} &lt;{{ commit.author.email }}&gt;</td>
+    </tr>
+    <tr>
+        <th>date</th>
+        <td>{{ commit.committed_datetime|datetime }}</td>
+    </tr>
+    {% if commit.parents %}
+    <tr>
+        <th>parent</th>
+        <td>{% for parent in commit.parents %}<a href="/{{ repo_name }}/commit/{{ parent.hexsha }}">{{ parent.hexsha[:8] }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <th>tree</th>
+        <!--TODO-->
+        <td><a href="/{{ repo_name }}/tree?ref={{ commit.hexsha }}">{{ commit.tree.hexsha[:8] }}</a></td>
+    </tr>
+</table>
+
+<h3>Commit message</h3>
+<div>{{ commit.message }}</div>
+
+<h3>Diff</h3>
+{% for diff in diffs %}
+<div>
+    {% if diff.new_file %}
+    <strong style="color: green;">new:</strong> {{ diff.b_path }}
+    {% elif diff.deleted_file %}
+    <strong style="color: red;">deleted:</strong> {{ diff.a_path }}
+    {% elif diff.renamed_file %}
+    <strong>renamed:</strong> {{ diff.a_path }} -> {{ diff.b_path }}
+    {% else %}
+    <strong>modified:</strong> {{ diff.a_path }}
+    {% endif %}
+</div>
+<div >{% if diff.diff %}{{ diff.diff.decode('utf-8', errors='replace') }}{% else %}Binary file{% endif %}</div>
+{% endfor %}
+
+{% if not diffs %}
+<p>No changes</p>
+{% endif %}
+{% endblock %}

@@ -1,10 +1,17 @@
 from flask import Flask, render_template, request
-from util import get_readme, get_repos, get_commits
+from util import get_readme, get_repos, get_commits, get_commit
 from pathlib import Path
+from datetime import datetime
 
 app = Flask(__name__)
 
 repoRoot = Path("/home/lhietala/git-webview/repos-example")
+
+@app.template_filter('datetime')
+def format_datetime(value, format='%Y-%m-%d %H:%M'):
+    if isinstance(value, (int, float)):
+        value = datetime.fromtimestamp(value)
+    return value.strftime(format)
 
 @app.route("/")
 def index():
@@ -43,6 +50,15 @@ def commits(repo_name):
                          page=page, 
                          has_next=has_next, 
                          has_prev=has_prev)
+
+@app.route("/<repo_name>/commit/<commit_hash>")
+def commit(repo_name, commit_hash):
+    commit = get_commit(str(repoRoot / repo_name), commit_hash)
+    
+    return render_template("commit.html", 
+                           repo_name=repo_name, 
+                           commit=commit["commit"],
+                           diffs=commit["diffs"])
 
 if __name__ == "__main__":
     app.run()

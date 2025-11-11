@@ -51,20 +51,20 @@ def get_repos(repos_path=None):
     
     return repos
 
-def get_readme(repo_path=None):
+def get_readme(repo_path=None, ref='HEAD'):
     try:
         repo = git.Repo(repo_path)
         
         if not repo.bare:
             return None
         
-        head = repo.head.commit
+        commit = repo.commit(ref)
         
         readme_names = ['README.md', 'README'] # there might be more...
         
         for readme_name in readme_names:
             try:
-                blob = head.tree / readme_name
+                blob = commit.tree / readme_name
                 return blob.data_stream.read().decode('utf-8')
             except KeyError:
                 continue
@@ -75,7 +75,7 @@ def get_readme(repo_path=None):
         print(f"error reading readme: {e}")
         return None
 
-def get_commits(repo_path=None, max_count=20, skip=0):
+def get_commits(repo_path=None, max_count=20, skip=0, ref='HEAD'):
     try:
         repo = git.Repo(repo_path)
         
@@ -83,7 +83,7 @@ def get_commits(repo_path=None, max_count=20, skip=0):
             return []
         
         commits = []
-        for commit in repo.iter_commits('HEAD', max_count=max_count, skip=skip):
+        for commit in repo.iter_commits(ref, max_count=max_count, skip=skip):
             # lazily calculate stats with lib
             insertions = 0
             deletions = 0
@@ -278,4 +278,31 @@ def create_bare_repo(repo_path, name, description=""):
             "success": False,
             "message": f"error creating repository: {str(e)}"
         }
+
+def search_commits(repo_path=None, query="", ref='HEAD'):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare or not query:
+            return []
+        
+        results = []
+        # maybe not wise to check all commits, but its problem for later (TODO)
+        for commit in repo.iter_commits(ref):
+            # search in commit message and author, searchin code 
+            # reference for later https://github.blog/engineering/architecture-optimization/the-technology-behind-githubs-new-code-search/
+            if (query.lower() in commit.message.lower() or 
+                query.lower() in commit.author.name.lower()):
+                results.append({
+                    "hexsha": commit.hexsha,
+                    "author": commit.author.name,
+                    "date": commit.committed_datetime,
+                    "message": commit.message.strip()
+                })
+                
+        return results
+        
+    except Exception as e:
+        print(f"error searching commits: {e}")
+        return []
     

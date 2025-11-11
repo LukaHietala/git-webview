@@ -35,7 +35,7 @@
 {% if page %}
 <div>
     {% if has_prev %}
-    <a href="{{ url_for('commits', repo_name=repo_name, page=page-1) }}">Previous</a>
+    <a href="{{ url_for('commits', repo_name=repo_name, page=page-1, ref=ref) }}">Previous</a>
     {% else %}
     <span>Previous</span>
     {% endif %}
@@ -43,7 +43,7 @@
     <span>Page {{ page }}</span>
     
     {% if has_next %}
-    <a href="{{ url_for('commits', repo_name=repo_name, page=page+1) }}">Next</a>
+    <a href="{{ url_for('commits', repo_name=repo_name, page=page+1, ref=ref) }}">Next</a>
     {% else %}
     <span>Next</span>
     {% endif %}

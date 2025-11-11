@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Search - {{ repo_name }}{% endblock %}
+
+{% block content %}
+
+<h2>Search Commits</h2>
+
+<form method="GET" action="/{{ repo_name }}/search">
+    <input type="text" name="query" value="{{ query }}" placeholder="Search by author or commit message...">
+    <input type="hidden" name="ref" value="{{ ref if ref else 'HEAD' }}">
+    <button type="submit">Search</button>
+</form>
+
+{% if query %}
+<div style="margin-top: 20px;">
+    <p><strong>Results for "{{ query }}":</strong> {{ results|length }} commit(s) found</p>
+    
+    {% if results %}
+    <table class="search-table">
+        <thead>
+            <tr>
+                <td class="commit-col">Commit</td>
+                <td class="author-col">Author</td>
+                <td class="date-col">Date</td>
+                <td class="message-col">Message</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commit in results %}
+            <tr>
+                <td class="commit-col"><a href="/{{ repo_name }}/commit/{{ commit.hexsha }}">{{ commit.hexsha[:8] }}</a></td>
+                <td class="author-col">{{ commit.author | highlight(query) | safe }}</td>
+                <td class="date-col">{{ commit.date | age }}</td>
+                <td class="message-col">{{ commit.message | highlight(query) | safe }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No results found</p>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

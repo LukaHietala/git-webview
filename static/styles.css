@@ -142,6 +142,43 @@ table.commits-table td.message-col {
 	overflow: visible;
 }
 
+/* search highlighting */
+mark {
+	background-color: yellow;
+	font-weight: bold;
+}
+
+/* search results table */
+table.search-table {
+	width: 100%;
+	table-layout: fixed;
+}
+
+table.search-table td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+table.search-table td.commit-col {
+	width: 6%;
+}
+
+table.search-table td.author-col {
+	width: 11%;
+}
+
+table.search-table td.date-col {
+	width: 8%;
+}
+
+table.search-table td.message-col {
+	width: 75%;
+	white-space: normal;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
 
 
 

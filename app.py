@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from functools import wraps
 from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, search_commits
@@ -5,9 +6,15 @@ from pathlib import Path
 from datetime import datetime
 from db import init_db, verify_user
 import re
+from dotenv import load_dotenv
+import secrets
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = '1234' # safe
+app.secret_key = secrets.token_hex()
+
+repoRoot = Path(os.getenv('REPO_ROOT'))
 
 init_db()
 
@@ -20,7 +27,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return check_login
 
-repoRoot = Path("/home/lhietala/git-webview/repos-example")
 
 # full date
 @app.template_filter('datetime')

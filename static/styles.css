@@ -51,6 +51,49 @@ table.commits-table td.message-col {
 }
 
 
+/* diffs */
+/* TODO: add more colors to text*/
+.diff-file {
+	margin: 16px 0;
+}
+
+.diff-file-header {
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.diff-status-new {
+	color: green;
+}
+
+.diff-status-deleted {
+	color: red;
+}
+
+.diff-status-renamed {
+	color: blue;
+}
+
+.diff-code {
+	margin: 0;
+	padding: 0;
+	font-family: monospace;
+	font-size: 12px;
+	overflow-x: auto;
+}
+
+.diff-binary {
+	color: #666;
+	font-style: italic;
+	margin: 4px 0;
+}
+
+
+
+
+
+
+
 
 
 

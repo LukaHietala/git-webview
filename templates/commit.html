@@ -32,25 +32,31 @@
 </table>
 
 <h3>Commit message</h3>
-<div>{{ commit.message }}</div>
+<p>{{ commit.message }}</p>
 
 <h3>Diff</h3>
 {% for diff in diffs %}
-<div>
-    {% if diff.new_file %}
-    <strong style="color: green;">new:</strong> {{ diff.b_path }}
-    {% elif diff.deleted_file %}
-    <strong style="color: red;">deleted:</strong> {{ diff.a_path }}
-    {% elif diff.renamed_file %}
-    <strong>renamed:</strong> {{ diff.a_path }} -> {{ diff.b_path }}
+<div class="diff-file">
+    <div class="diff-file-header">
+        {% if diff.new_file %}
+        <span class="diff-status-new">new:</span> {{ diff.b_path }}
+        {% elif diff.deleted_file %}
+        <span class="diff-status-deleted">deleted:</span> {{ diff.a_path }}
+        {% elif diff.renamed_file %}
+        <span class="diff-status-renamed">renamed:</span> {{ diff.a_path }} -> {{ diff.b_path }}
+        {% else %}
+        {{ diff.a_path }}
+        {% endif %}
+    </div>
+    {% if diff.diff %}
+    <pre class="diff-code">{{ diff.diff.decode('utf-8', errors='replace') }}</pre>
     {% else %}
-    <strong>modified:</strong> {{ diff.a_path }}
+    <div class="diff-binary">Binary file</div>
     {% endif %}
 </div>
-<div >{% if diff.diff %}{{ diff.diff.decode('utf-8', errors='replace') }}{% else %}Binary file{% endif %}</div>
 {% endfor %}
 
 {% if not diffs %}
-<p>No changes</p>
+<p>No changes in this commit</p>
 {% endif %}
 {% endblock %}

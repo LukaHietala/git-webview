@@ -34,7 +34,7 @@
         {% endfor %}
     </tbody>
 </table>
-
+{% if page %}
 <div>
     {% if has_prev %}
     <a href="{{ url_for('commits', repo_name=repo_name, page=page-1) }}">Previous</a>
@@ -50,4 +50,5 @@
     <span>Next</span>
     {% endif %}
 </div>
+{% endif %}
 {% endblock %}

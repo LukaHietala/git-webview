@@ -27,8 +27,18 @@
     <p>Binary file ({{ blob.size }} bytes)</p>
 </div>
 {% else %}
-<div>
-    <pre><code>{{ blob.content }}</code></pre>
+<div class="blob-container">
+    <!--table workaround for line numbers, maybe just pre in the future-->
+    <table class="blob-table">
+        <tbody>
+            {% for line in blob.content.splitlines() %}
+            <tr>
+                <td class="blob-line-num">{{ loop.index }}</td>
+                <td class="blob-code"><pre>{{ line }}</pre></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endif %}
 

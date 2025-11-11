@@ -100,6 +100,58 @@ table.commits-table td.message-col {
 	margin: 4px 0;
 }
 
+/* blobs */
+/* syntax highlighting maybe?? */
+.blob-container {
+	margin: 16px 0;
+	border: 1px solid lightgray;
+	overflow-x: auto;
+}
+
+.blob-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.blob-table tbody tr {
+	background-color: white;
+}
+
+.blob-line-num {
+	width: 50px;
+	padding: 0 10px;
+	text-align: right;
+	color: gray;
+	background-color: #f5f5f5;
+	border-right: 1px solid lightgray;
+	user-select: none;
+	font-family: monospace;
+	font-size: 12px;
+}
+
+.blob-code {
+	padding: 0;
+	vertical-align: top;
+}
+
+.blob-code pre {
+	margin: 0;
+	padding: 0 10px;
+	font-family: monospace;
+	font-size: 12px;
+	overflow: visible;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -82,6 +82,18 @@ table.commits-table td.message-col {
 	overflow-x: auto;
 }
 
+.diff-added {
+	color: green;
+}
+
+.diff-removed {
+	color: red;
+}
+
+.diff-hunk {
+	background-color: lightgray;
+}
+
 .diff-binary {
 	color: #666;
 	font-style: italic;

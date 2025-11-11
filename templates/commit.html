@@ -49,7 +49,13 @@
         {% endif %}
     </div>
     {% if diff.diff %}
-    <pre class="diff-code">{{ diff.diff.decode('utf-8', errors='replace') }}</pre>
+    <!--TODO: remove cursed parsing (that maybe works in all cases?)-->
+    <!-- dont change indentation -->
+    <pre class="diff-code">{% for line in diff.diff.decode('utf-8', errors='replace').splitlines() %}{% if line.startswith('+') and not line.startswith('+++') %}<span class="diff-added">{{ line }}</span>
+{% elif line.startswith('-') and not line.startswith('---') %}<span class="diff-removed">{{ line }}</span>
+{% elif line.startswith('@@') %}<span class="diff-hunk">{{ line }}</span>
+{% else %}{{ line }}
+{% endif %}{% endfor %}</pre>
     {% else %}
     <div class="diff-binary">Binary file</div>
     {% endif %}

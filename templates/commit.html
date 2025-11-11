@@ -7,25 +7,25 @@
 
 <table>
     <tr>
-        <th>commit</th>
+        <td>commit</td>
         <td class="sha">{{ commit.hexsha }}</td>
     </tr>
     <tr>
-        <th>author</th>
+        <td>author</td>
         <td>{{ commit.author.name }} &lt;{{ commit.author.email }}&gt;</td>
     </tr>
     <tr>
-        <th>date</th>
+        <td>date</td>
         <td>{{ commit.committed_datetime|datetime }}</td>
     </tr>
     {% if commit.parents %}
     <tr>
-        <th>parent</th>
+        <td>parent</td>
         <td>{% for parent in commit.parents %}<a href="/{{ repo_name }}/commit/{{ parent.hexsha }}">{{ parent.hexsha[:8] }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</td>
     </tr>
     {% endif %}
     <tr>
-        <th>tree</th>
+        <td>tree</td>
         <!--TODO-->
         <td><a href="/{{ repo_name }}/tree?ref={{ commit.hexsha }}">{{ commit.tree.hexsha[:8] }}</a></td>
     </tr>

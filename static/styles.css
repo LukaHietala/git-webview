@@ -3,8 +3,51 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 }
 
-table thead td {
+table thead td, table thead th {
 	font-weight: bold;
+}
+
+
+/* TODO: remove hardcoded styles */
+table {
+	border-collapse: collapse;
+}
+
+td, th {
+	padding: 4px 8px;
+}
+
+tbody tr:nth-child(even) {
+	background-color: #f5f5f5;
+}
+
+table.commits-table {
+	width: 100%;
+	table-layout: fixed;
+}
+
+table.commits-table td {
+	white-space: nowrap;
+}
+
+table.commits-table td.author-col {
+	width: 15%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+table.commits-table td.age-col {
+	width: 10%;
+}
+
+table.commits-table td.changes-col {
+	width: 15%;
+}
+
+table.commits-table td.message-col {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 

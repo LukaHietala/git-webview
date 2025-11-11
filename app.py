@@ -21,11 +21,41 @@ def login_required(f):
 
 repoRoot = Path("/home/lhietala/git-webview/repos-example")
 
+# full date
 @app.template_filter('datetime')
 def format_datetime(value, format='%Y-%m-%d %H:%M'):
     if isinstance(value, (int, float)):
         value = datetime.fromtimestamp(value)
     return value.strftime(format)
+
+# relative age
+@app.template_filter('age')
+def format_age(value):
+    if isinstance(value, (int, float)):
+        value = datetime.fromtimestamp(value)
+    
+    # ignore timezone
+    if value.tzinfo is not None:
+        value = value.replace(tzinfo=None)
+    
+    now = datetime.now()
+    difference = now - value
+
+    seconds = difference.total_seconds()
+
+    if seconds < 60:
+        return "just now"
+    elif seconds < 3600:  # 1 hour
+        minutes = int(seconds / 60)
+        return f"{minutes} minute{'s' if minutes != 1 else ''}"
+    elif seconds < 86400: # 24 hours
+        hours = int(seconds / 3600)
+        return f"{hours} hour{'s' if hours != 1 else ''}"
+    elif seconds < 604800:  # 7 days
+        days = int(seconds / 86400)
+        return f"{days} day{'s' if days != 1 else ''}"
+    else:
+        return value.strftime('%Y-%m-%d')
 
 @app.route("/")
 def index():

@@ -6,26 +6,24 @@
 {% block content %}
 <h2>Commits</h2>
 
-<table>
+<table class="commits-table">
     <thead>
         <tr>
-            <td>Hash</td>
-            <td>Message</td>
-            <td>Author</td>
-            <td>Date</td>
-            <td>Changes</td>
+            <td class="message-col">Message</td>
+            <td class="author-col">Author</td>
+            <td class="age-col">Age</td>
+            <td class="changes-col">Changes</td>
         </tr>
     </thead>
     <tbody>
         {% for commit in commits %}
         <tr>
-            <td>
-                <a href="/{{ repo_name }}/commit/{{ commit.hexsha }}">{{ commit.hexsha[:8] }}</a>
+            <td class="message-col">
+                <a href="/{{ repo_name }}/commit/{{ commit.hexsha }}">{{ commit.message }}</a>
             </td>
-            <td>{{ commit.message }}</td>
-            <td>{{ commit.author }}</td>
-            <td>{{ commit.date | datetime }}</td>
-            <td>
+            <td class="author-col">{{ commit.author }}</td>
+            <td class="age-col">{{ commit.date | age }}</td>
+            <td class="changes-col">
                 <span style="color: grey">{{ commit.files_changed }} file{% if commit.files_changed != 1 %}s{% endif %}</span>
                 <span style="color: green;">+{{ commit.insertions }}</span>
                 <span style="color: red;">-{{ commit.deletions }}</span>

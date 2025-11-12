@@ -34,7 +34,7 @@ def get_repos(repos_path=None):
                             if not desc.startswith("Unnamed"):
                                 repo_info["description"] = desc
                             else:
-                                repo_info["description"] = "no description"
+                                repo_info["description"] = "-"
                         except:
                             pass
                     

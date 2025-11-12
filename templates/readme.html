@@ -2,11 +2,26 @@
 
 {% block title %}{{ repo_name }} - README{% endblock %}
 
+{% block extra_head %}
+<script src="/static/marked.min.js"></script>
+{% endblock %}
+
 {% block content %}
 <h2>README</h2>
 
 {% if readme %}
-<pre>{{ readme }}</pre>
+<div id="readme-content" class="readme-content"></div>
+<script type="text/plain" id="readme-raw">
+{{ readme }}
+</script>
+<script>
+    // not sanitized, relying purely on TRUST
+document.addEventListener('DOMContentLoaded', function() {
+    const rawContent = document.getElementById('readme-raw').textContent;
+    const parsedContent = marked.parse(rawContent);
+    document.getElementById('readme-content').innerHTML = parsedContent;
+});
+</script>
 {% else %}
 <p>No README</p>
 {% endif %}

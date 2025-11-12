@@ -209,6 +209,57 @@ table.search-table td.size-col {
 	width: 10%;
 }
 
+/* readme content styling */
+/* TODO: add more */
+.readme-content {
+	line-height: 1.6;
+	margin: 20px 0;
+}
+
+.readme-content h1,
+.readme-content h2,
+.readme-content h3 {
+	font-weight: bold;
+	margin: 1em 0 0.5em 0;
+}
+
+.readme-content h1 {
+	font-size: 1.3em;
+}
+
+.readme-content h2 {
+	font-size: 1.2em;
+}
+
+.readme-content h3 {
+	font-size: 1.1em;
+}
+
+.readme-content p {
+	margin: 1em 0;
+}
+
+.readme-content pre {
+	background-color: #f5f5f5;
+	padding: 12px;
+	font-family: monospace;
+	font-size: 12px;
+	margin: 1em 0;
+}
+
+.readme-content code {
+	font-family: monospace;
+	background-color: #f5f5f5;
+	padding: 2px 4px;
+}
+
+.readme-content ul,
+.readme-content ol {
+	margin: 1em 0;
+	padding-left: 2em;
+}
+
+
 
 
 

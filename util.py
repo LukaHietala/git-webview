@@ -173,7 +173,7 @@ def get_refs(repo_path=None):
         print(f"error reading refs: {e}")
         return {"branches": [], "tags": []}
 
-def get_tree(repo_path=None, tree_path="", ref="HEAD"):
+def get_tree(repo_path=None, tree_path="", ref="HEAD", query=""):
     try:
         repo = git.Repo(repo_path)
         
@@ -201,6 +201,10 @@ def get_tree(repo_path=None, tree_path="", ref="HEAD"):
 
         # dirs -> files (all alphabetically)
         entries.sort(key=lambda x: (x['type'] != 'tree', x['name'].lower()))
+        
+        # filter by query if provided
+        if query:
+            entries = [entry for entry in entries if query.lower() in entry['name'].lower()]
         
         return {
             "entries": entries,
@@ -305,4 +309,3 @@ def search_commits(repo_path=None, query="", ref='HEAD'):
     except Exception as e:
         print(f"error searching commits: {e}")
         return []
-    

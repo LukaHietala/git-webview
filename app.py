@@ -171,7 +171,8 @@ def refs(repo_name):
 @app.route('/<repo_name>/tree/<path:tree_path>')
 def tree(repo_name, tree_path=""):
     ref = request.args.get('ref', 'HEAD')
-    tree_data = get_tree(str(repoRoot / repo_name), tree_path, ref)
+    query = request.args.get('query', '').strip()
+    tree_data = get_tree(str(repoRoot / repo_name), tree_path, ref, query)
     refs = get_refs(str(repoRoot / repo_name))
     
     path_parts = []
@@ -188,6 +189,7 @@ def tree(repo_name, tree_path=""):
                            path_parts=path_parts,
                            current_path=tree_path,
                            ref=ref,
+                           query=query,
                            branches=refs["branches"],
                            tags=refs["tags"])
 

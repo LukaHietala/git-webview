@@ -1,8 +1,93 @@
+
 {% extends "base.html" %}
 
 {% block title %}{{ blob.name }} - {{ repo_name }}{% endblock %}
 
+{% block extra_head %}
+    <script>
+        // The highlight.js lib is quite large, load it only if needed
+
+        function getCookie(name) {
+            let value = "; " + document.cookie;
+            let parts = value.split("; " + name + "=");
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function setCookie(name, value) {
+            let expires = "";
+            let date = new Date();
+            date.setTime(date.getTime() + (365*24*60*60*1000)); //year
+            expires = "; expires=" + date.toUTCString();
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+        
+        function loadHighlight() {
+            if (!document.getElementById('hljs-css')) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '/static/default.min.css';
+                link.id = 'hljs-css';
+                document.head.appendChild(link);
+            }
+            if (!window.hljs) {
+                const script = document.createElement('script');
+                script.src = '/static/highlight.min.js';
+                script.id = 'hljs-js';
+                script.onload = function() { 
+                    if (window.hljs) {
+                        hljs.highlightAll();
+                    }
+                };
+                document.head.appendChild(script);
+            } else {
+                hljs.highlightAll();
+            }
+        }
+        function unloadHighlight() {
+            const css = document.getElementById('hljs-css');
+            if (css) css.remove();
+            const script = document.getElementById('hljs-js');
+            if (script) script.remove();
+            // too lazy to remove classes
+        }
+
+        function isHighlightDisabled() {
+            return getCookie('highlight_disabled') === '1';
+        }
+
+        // need to wait for checkbox to exist
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('toggle-highlight');
+            const label = checkbox.parentElement;
+            function updateCheckbox() {
+                checkbox.checked = !isHighlightDisabled();
+            }
+            checkbox.onchange = function() {
+                if (checkbox.checked) {
+                    setCookie('highlight_disabled', '');
+                    loadHighlight();
+                } else {
+                    setCookie('highlight_disabled', '1');
+                    unloadHighlight();
+                }
+                updateCheckbox();
+            };
+            updateCheckbox();
+            if (!isHighlightDisabled()) {
+                loadHighlight();
+            } else {
+                unloadHighlight();
+            }
+        });
+    </script>
+{% endblock %}
+
+
 {% block content %}
+
+<div style="margin-bottom: 1em;">
+    <label><input id="toggle-highlight" type="checkbox">Syntax highlighting</label>
+</div>
 
 {% if blob %}
 <div>
@@ -36,7 +121,7 @@
     <div class="blob-code">
         <!--hope that highlight js has all the aliases based on file extension -->
         {% set ext = blob.name.split('.')[-1] if '.' in blob.name else '' %}
-        <pre><code class="language-{{ ext }}">{{ blob.content }}</code></pre>
+    <pre><code class="language-{{ ext }}">{{ blob.content }}</code></pre>
     </div>
 </div>
 {% endif %}

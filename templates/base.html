@@ -17,6 +17,10 @@
         <a href="/">Back</a> 
     </nav>
     
+    <div style="margin: 10px 0;">
+        <strong>Clone:</strong> <code>{{ ssh_base_url }}/{{ repo_name }}</code>
+    </div>
+    
     {% if branches or tags %}
     <div style="margin: 10px;">
         <form method="GET" style="display: inline;">

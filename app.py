@@ -292,5 +292,10 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
+# just inject so passing theres no need to pass every time
+@app.context_processor
+def inject_clone_url():
+    return {'ssh_base_url': "git@wisdurm.fi:/srv/git"}
+
 if __name__ == "__main__":
     app.run()

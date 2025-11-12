@@ -40,8 +40,12 @@
                 {% if session.username %}
                 <td>
                     <form method="POST" action="/add_owner/{{ repo.name }}" style="display:inline;">
-                        <button type="button" onclick="showOwnerInput(this)">Add Owner</button>
-                        <input type="text" name="owner" style="display:none;" placeholder="New owner" />
+                        <button type="button" onclick="showOwnerSelect(this)">Add Owner</button>
+                        <select name="owner" style="display:none;">
+                            {% for user in users %}
+                                <option value="{{ user }}">{{ user }}</option>
+                            {% endfor %}
+                        </select>
                         <button type="submit" style="display:none;">Save</button>
                     </form>
                 </td>
@@ -56,14 +60,14 @@
 </body>
 </html>
 <script>
-    function showOwnerInput(button) {
-        const form = button.closest('form'); // TODO: very hacky
+    function showOwnerSelect(button) {
+        const form = button.closest('form');
         button.style = 'display:none;';
-        const input = form.querySelector('input[name="owner"]');
+        const select = form.querySelector('select[name="owner"]');
         const saveButton = form.querySelector('button[type="submit"]');
-        input.style = 'display:inline;';
+        select.style = 'display:inline;';
         saveButton.style = 'display:inline;';
-        input.focus();
+        select.focus();
     }
 </script>
 </html>

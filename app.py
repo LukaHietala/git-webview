@@ -4,7 +4,7 @@ from functools import wraps
 from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, search_commits
 from pathlib import Path
 from datetime import datetime
-from db import init_db, verify_user, get_repo_info, set_repo_owner
+from db import init_db, verify_user, get_repo_info, set_repo_owner, get_all_users
 import re
 from dotenv import load_dotenv
 import secrets
@@ -82,8 +82,10 @@ def index():
         # some repos might not have db entry yet, so check
         if isinstance(extra_info, dict):
             repo.update(extra_info)
+    users = get_all_users()
     return render_template("index.html", 
-                           repos=repos)
+                           repos=repos,
+                           users=users)
 
 @app.route('/add_owner/<repo_name>', methods=['POST'])
 @login_required

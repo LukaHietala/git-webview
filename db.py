@@ -92,7 +92,16 @@ def set_repo_owner(repo_name, owner):
     conn.commit()
     conn.close()
 
+def get_all_users():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('SELECT username FROM users')
+    users = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return users
+
 if __name__ == "__main__":
     init_db()
 
     create_user("admin", "admin") # for now
+    create_user("Luka Hietala", "admin")

@@ -14,6 +14,14 @@ def init_db():
             password_hash TEXT NOT NULL
         )
     ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS repos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            repo_name TEXT UNIQUE NOT NULL,
+            owner TEXT NOT NULL
+        )
+    ''')
     
     conn.commit()
     conn.close()
@@ -50,6 +58,22 @@ def verify_user(username, password):
     
     if result:
         return check_password_hash(result[0], password)
+    return False
+
+def get_repo_info(repo_name):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    cursor.execute(
+        'SELECT owner FROM repos WHERE repo_name = ?',
+        (repo_name,)
+    )
+    
+    result = cursor.fetchone()
+    conn.close()
+
+    if result:
+        return {"owner": result[0]}
     return False
 
 if __name__ == "__main__":

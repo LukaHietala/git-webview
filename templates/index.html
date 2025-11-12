@@ -23,6 +23,7 @@
             <tr>
                 <td>Name</td>
                 <td>Description</td>
+                <td>Owner</td>
                 <td>Last Updated</td>
             </tr>
         </thead>
@@ -31,6 +32,7 @@
             <tr>
                 <td><a href="/{{ repo.name }}/">{{ repo.name }}</a></td>
                 <td>{{ repo.description }}</td>
+                <td>{{ repo.owner if repo.owner else '-' }}</td>
                 <td>{{ repo.last_updated | datetime if repo.last_updated else '-' }}</td>
             </tr>
             {% endfor %}

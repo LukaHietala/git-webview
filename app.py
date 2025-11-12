@@ -4,7 +4,7 @@ from functools import wraps
 from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, search_commits
 from pathlib import Path
 from datetime import datetime
-from db import init_db, verify_user
+from db import init_db, verify_user, get_repo_info
 import re
 from dotenv import load_dotenv
 import secrets
@@ -76,6 +76,12 @@ def format_age(value):
 @app.route("/")
 def index():
     repos = get_repos(repoRoot)
+    for repo in repos:
+        # add info from db to repo dict (owner, etc)
+        extra_info = get_repo_info(repo['name'])
+        # some repos might not have db entry yet, so check
+        if isinstance(extra_info, dict):
+            repo.update(extra_info)
     return render_template("index.html", 
                            repos=repos)
 

@@ -25,6 +25,9 @@
                 <td>Description</td>
                 <td>Owner</td>
                 <td>Last Updated</td>
+                {% if session.username %}
+                <td>Actions</td>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -34,6 +37,15 @@
                 <td>{{ repo.description }}</td>
                 <td>{{ repo.owner if repo.owner else '-' }}</td>
                 <td>{{ repo.last_updated | datetime if repo.last_updated else '-' }}</td>
+                {% if session.username %}
+                <td>
+                    <form method="POST" action="/add_owner/{{ repo.name }}" style="display:inline;">
+                        <button type="button" onclick="showOwnerInput(this)">Add Owner</button>
+                        <input type="text" name="owner" style="display:none;" placeholder="New owner" />
+                        <button type="submit" style="display:none;">Save</button>
+                    </form>
+                </td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>
@@ -42,4 +54,16 @@
     <p>No repositories found</p>
     {% endif %}
 </body>
+</html>
+<script>
+    function showOwnerInput(button) {
+        const form = button.closest('form'); // TODO: very hacky
+        button.style = 'display:none;';
+        const input = form.querySelector('input[name="owner"]');
+        const saveButton = form.querySelector('button[type="submit"]');
+        input.style = 'display:inline;';
+        saveButton.style = 'display:inline;';
+        input.focus();
+    }
+</script>
 </html>

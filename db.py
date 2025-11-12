@@ -60,6 +60,8 @@ def verify_user(username, password):
         return check_password_hash(result[0], password)
     return False
 
+# REPO QUERIES
+
 def get_repo_info(repo_name):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -75,6 +77,20 @@ def get_repo_info(repo_name):
     if result:
         return {"owner": result[0]}
     return False
+
+def set_repo_owner(repo_name, owner):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # repo info might not exist yet, so check, if not, insert
+    cursor.execute('SELECT id FROM repos WHERE repo_name = ?', (repo_name,))
+    result = cursor.fetchone()
+    if result:
+        cursor.execute('UPDATE repos SET owner = ? WHERE repo_name = ?', (owner, repo_name))
+    else:
+        cursor.execute('INSERT INTO repos (repo_name, owner) VALUES (?, ?)', (repo_name, owner))
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     init_db()

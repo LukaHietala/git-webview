@@ -4,7 +4,7 @@ from functools import wraps
 from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, search_commits
 from pathlib import Path
 from datetime import datetime
-from db import init_db, verify_user, get_repo_info
+from db import init_db, verify_user, get_repo_info, set_repo_owner
 import re
 from dotenv import load_dotenv
 import secrets
@@ -84,6 +84,14 @@ def index():
             repo.update(extra_info)
     return render_template("index.html", 
                            repos=repos)
+
+@app.route('/add_owner/<repo_name>', methods=['POST'])
+@login_required
+def add_owner(repo_name):
+    owner = request.form.get('owner')
+    if owner:
+        set_repo_owner(repo_name, owner)
+    return redirect(url_for('index'))
 
 @app.route("/<repo_name>/")
 def repo_index(repo_name):

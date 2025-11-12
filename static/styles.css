@@ -190,6 +190,25 @@ table.search-table td.message-col {
 	overflow-wrap: break-word;
 }
 
+table.search-table td.name-col {
+	width: 20%;
+}
+
+table.search-table td.path-col {
+	width: 60%;
+	white-space: normal;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+table.search-table td.type-col {
+	width: 10%;
+}
+
+table.search-table td.size-col {
+	width: 10%;
+}
+
 
 
 

@@ -173,7 +173,7 @@ def get_refs(repo_path=None):
         print(f"error reading refs: {e}")
         return {"branches": [], "tags": []}
 
-def get_tree(repo_path=None, tree_path="", ref="HEAD", query=""):
+def get_tree(repo_path=None, tree_path="", ref="HEAD"):
     try:
         repo = git.Repo(repo_path)
         
@@ -201,10 +201,6 @@ def get_tree(repo_path=None, tree_path="", ref="HEAD", query=""):
 
         # dirs -> files (all alphabetically)
         entries.sort(key=lambda x: (x['type'] != 'tree', x['name'].lower()))
-        
-        # filter by query if provided
-        if query:
-            entries = [entry for entry in entries if query.lower() in entry['name'].lower()]
         
         return {
             "entries": entries,
@@ -308,4 +304,37 @@ def search_commits(repo_path=None, query="", ref='HEAD'):
         
     except Exception as e:
         print(f"error searching commits: {e}")
+        return []
+    
+def search_files(repo_path=None, query="", ref="HEAD"):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare or not query:
+            return []
+        
+        results = []
+        
+        # recursive tree traversal, also pieces together full paths for files
+        # still very fast so no indexing for now
+        def traverse_tree(tree, current_path=""):
+            for item in tree:
+                full_path = f"{current_path}/{item.name}" if current_path else item.name
+                if query.lower() in item.name.lower():
+                    results.append({
+                        "name": item.name,
+                        "path": full_path,
+                        "type": item.type,
+                        "size": item.size if item.type == 'blob' else None
+                    })
+                if item.type == 'tree':
+                    traverse_tree(item, full_path)
+        
+        commit = repo.commit(ref)
+        traverse_tree(commit.tree)
+        
+        return results
+        
+    except Exception as e:
+        print(f"error searching files: {e}")
         return []

@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from functools import wraps
-from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, search_commits
+from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, search_commits, search_files
 from pathlib import Path
 from datetime import datetime
 from db import init_db, verify_user, get_repo_info, set_repo_owner, get_all_users
@@ -172,26 +172,38 @@ def refs(repo_name):
 def tree(repo_name, tree_path=""):
     ref = request.args.get('ref', 'HEAD')
     query = request.args.get('query', '').strip()
-    tree_data = get_tree(str(repoRoot / repo_name), tree_path, ref, query)
     refs = get_refs(str(repoRoot / repo_name))
     
-    path_parts = []
-    if tree_path:
-        parts = tree_path.split('/')
-        current_path = ""
-        for part in parts:
-            current_path = f"{current_path}/{part}" if current_path else part
-            path_parts.append({"name": part, "path": current_path})
-    
-    return render_template("tree.html", 
-                           repo_name=repo_name,
-                           tree=tree_data,
-                           path_parts=path_parts,
-                           current_path=tree_path,
-                           ref=ref,
-                           query=query,
-                           branches=refs["branches"],
-                           tags=refs["tags"])
+    if query:
+        # full tree search
+        search_results = search_files(str(repoRoot / repo_name), query, ref)
+        return render_template("tree.html", 
+                               repo_name=repo_name,
+                               search_results=search_results,
+                               query=query,
+                               ref=ref,
+                               branches=refs["branches"],
+                               tags=refs["tags"])
+    else:
+        # no search, just tree
+        tree_data = get_tree(str(repoRoot / repo_name), tree_path, ref)
+        
+        path_parts = []
+        if tree_path:
+            parts = tree_path.split('/')
+            current_path = ""
+            for part in parts:
+                current_path = f"{current_path}/{part}" if current_path else part
+                path_parts.append({"name": part, "path": current_path})
+        
+        return render_template("tree.html", 
+                               repo_name=repo_name,
+                               tree=tree_data,
+                               path_parts=path_parts,
+                               current_path=tree_path,
+                               ref=ref,
+                               branches=refs["branches"],
+                               tags=refs["tags"])
 
 @app.route('/<repo_name>/blob/<path:blob_path>')
 def blob(repo_name, blob_path):

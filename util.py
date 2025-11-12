@@ -58,7 +58,15 @@ def get_readme(repo_path=None, ref='HEAD'):
         if not repo.bare:
             return None
         
-        commit = repo.commit(ref)
+        try:
+            commit = repo.commit(ref)
+        except:
+            # sometimes HEAD is empty, if so try the next ref, if still fails, give up
+            if ref == "HEAD" and repo.heads:
+                ref = repo.heads[0].name
+                commit = repo.commit(ref)
+            else:
+                raise
         
         readme_names = ['README.md', 'README'] # there might be more...
         
@@ -81,6 +89,14 @@ def get_commits(repo_path=None, max_count=20, skip=0, ref='HEAD'):
         
         if not repo.bare:
             return []
+        
+        try:
+            list(repo.iter_commits(ref, max_count=1))
+        except:
+            if ref == "HEAD" and repo.heads:
+                ref = repo.heads[0].name
+            else:
+                raise
         
         commits = []
         for commit in repo.iter_commits(ref, max_count=max_count, skip=skip):
@@ -180,7 +196,15 @@ def get_tree(repo_path=None, tree_path="", ref="HEAD"):
         if not repo.bare:
             return None
         
-        commit = repo.commit(ref)
+        try:
+            commit = repo.commit(ref)
+        except:
+            if ref == "HEAD" and repo.heads:
+                ref = repo.heads[0].name
+                commit = repo.commit(ref)
+            else:
+                raise
+        
         tree = commit.tree
         
         if tree_path:
@@ -219,7 +243,14 @@ def get_blob(repo_path=None, blob_path="", ref="HEAD"):
         if not repo.bare:
             return None
         
-        commit = repo.commit(ref)
+        try:
+            commit = repo.commit(ref)
+        except:
+            if ref == "HEAD" and repo.heads:
+                ref = repo.heads[0].name
+                commit = repo.commit(ref)
+            else:
+                raise
         
         try:
             blob = commit.tree / blob_path
@@ -286,6 +317,14 @@ def search_commits(repo_path=None, query="", ref='HEAD'):
         if not repo.bare or not query:
             return []
         
+        try:
+            list(repo.iter_commits(ref, max_count=1))
+        except:
+            if ref == "HEAD" and repo.heads:
+                ref = repo.heads[0].name
+            else:
+                raise
+        
         results = []
         # maybe not wise to check all commits, but its problem for later (TODO)
         for commit in repo.iter_commits(ref):
@@ -313,6 +352,15 @@ def search_files(repo_path=None, query="", ref="HEAD"):
         if not repo.bare or not query:
             return []
         
+        try:
+            commit = repo.commit(ref)
+        except:
+            if ref == "HEAD" and repo.heads:
+                ref = repo.heads[0].name
+                commit = repo.commit(ref)
+            else:
+                raise
+        
         results = []
         
         # recursive tree traversal, also pieces together full paths for files
@@ -330,7 +378,6 @@ def search_files(repo_path=None, query="", ref="HEAD"):
                 if item.type == 'tree':
                     traverse_tree(item, full_path)
         
-        commit = repo.commit(ref)
         traverse_tree(commit.tree)
         
         return results

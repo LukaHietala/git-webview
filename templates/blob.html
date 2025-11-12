@@ -27,18 +27,17 @@
     <p>Binary file ({{ blob.size }} bytes)</p>
 </div>
 {% else %}
-<div class="blob-container">
-    <!--table workaround for line numbers, maybe just pre in the future-->
-    <table class="blob-table">
-        <tbody>
-            {% for line in blob.content.splitlines() %}
-            <tr>
-                <td class="blob-line-num">{{ loop.index }}</td>
-                <td class="blob-code"><pre>{{ line }}</pre></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="blob-container" >
+    <div class="blob-line-num">
+        {% for _ in blob.content.splitlines() %}
+            <span>{{ loop.index }}</span>
+        {% endfor %}
+    </div>
+    <div class="blob-code">
+        <!--hope that highlight js has all the aliases based on file extension -->
+        {% set ext = blob.name.split('.')[-1] if '.' in blob.name else '' %}
+        <pre><code class="language-{{ ext }}">{{ blob.content }}</code></pre>
+    </div>
 </div>
 {% endif %}
 

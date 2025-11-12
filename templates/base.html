@@ -3,6 +3,9 @@
 <head>
     <title>{% block title %}Git Webview{% endblock %}</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/default.min.css">
+    <script src="/static/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
 </head>
 <body>
     {% if repo_name %}

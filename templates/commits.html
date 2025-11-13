@@ -4,7 +4,7 @@
 {% block title %}{{ repo_name }} - Commits{% endblock %}
 
 {% block content %}
-<h2>Commits</h2>
+<h2 style="margin-left: 8px;">Commits</h2>
 
 <table class="commits-table">
     <thead>
@@ -33,7 +33,7 @@
     </tbody>
 </table>
 {% if page %}
-<div>
+<div style="margin-left: 8px; margin-top: 20px;">
     {% if has_prev %}
     <a href="{{ url_for('commits', repo_name=repo_name, page=page-1, ref=ref) }}">Previous</a>
     {% else %}

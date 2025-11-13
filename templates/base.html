@@ -9,6 +9,7 @@
     {% if repo_name %}
     <h1>{{ repo_name }}</h1>
     <nav>
+        <a href="/{{ repo_name }}/{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}">Overview</a> |
         <a href="/{{ repo_name }}/readme{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}">README</a> |
         <a href="/{{ repo_name }}/commits{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}">Commits</a> |
         <a href="/{{ repo_name }}/refs{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}">Refs</a> |

@@ -14,6 +14,7 @@
             <td>Commit</td>
             <td>Message</td>
             <td>Date</td>
+            <td>Download</td>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
             </td>
             <td>{{ branch.message }}</td>
             <td>{{ branch.date | datetime }}</td>
+            <td><a href="/{{ repo_name }}/download?ref={{ branch.name }}">Download</a></td>
         </tr>
         {% endfor %}
     </tbody>
@@ -42,6 +44,7 @@
             <td>Commit</td>
             <td>Message</td>
             <td>Date</td>
+            <td>Download</td>
         </tr>
     </thead>
     <tbody>
@@ -53,6 +56,7 @@
             </td>
             <td>{{ tag.message }}</td>
             <td>{{ tag.date | datetime }}</td>
+            <td><a href="/{{ repo_name }}/download?ref={{ tag.name }}">Download</a></td>
         </tr>
         {% endfor %}
     </tbody>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ repo_name }} - Overview{% endblock %}
+
+{% block content %}
+<h2>Overview</h2>
+
+{% if commits %}
+<div class="recent-commits-section">
+    <h3>Recent Commits</h3>
+    <table class="commits-table">
+        <thead>
+            <tr>
+                <!--TODO: add stats-->>
+                <td class="message-col">Message</td>
+                <td class="author-col">Author</td>
+                <td class="age-col">Age</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commit in commits[:10] %}
+            <tr>
+                <td class="message-col">
+                    <a href="/{{ repo_name }}/commit/{{ commit.hexsha }}">{{ commit.message }}</a>
+                </td>
+                <td class="author-col">{{ commit.author }}</td>
+                <td class="age-col">{{ commit.date | age }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="/{{ repo_name }}/commits{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}">View all commits</a></p>
+</div>
+{% endif %}
+{% endblock %}

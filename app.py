@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 from functools import wraps
 from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, search_commits, search_files
 from pathlib import Path
@@ -8,6 +8,8 @@ from db import init_db, verify_user, get_repo_info, set_repo_owner, get_all_user
 import re
 from dotenv import load_dotenv
 import secrets
+import tempfile
+import subprocess
 
 load_dotenv()
 
@@ -101,7 +103,7 @@ def repo_index(repo_name):
     commits = get_commits(str(repoRoot / repo_name), ref=ref)
     refs = get_refs(str(repoRoot / repo_name))
     
-    return render_template("commits.html", 
+    return render_template("overview.html", 
                            repo_name=repo_name, 
                            commits=commits,
                            branches=refs["branches"],
@@ -271,6 +273,39 @@ def search(repo_name):
                          branches=refs["branches"],
                          tags=refs["tags"],
                          ref=ref)
+
+@app.route('/<repo_name>/download')
+def download_repo(repo_name):
+    ref = request.args.get('ref', 'HEAD')
+    
+    try:
+        # tmp file like /tmp (cleared when reboot)
+        with tempfile.NamedTemporaryFile(suffix='.zip', delete=False) as temp_file:
+            temp_path = temp_file.name
+        
+        repo_path = str(repoRoot / repo_name)
+        # not using tar cause windows
+        cmd = ['git', 'archive', '--format=zip', f'--output={temp_path}', ref]
+        # maybe risky???
+        result = subprocess.run(cmd, cwd=repo_path, capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            os.unlink(temp_path)
+            return redirect(url_for('index'))
+        
+        response = send_file(temp_path, 
+                           as_attachment=True, 
+                           download_name=f'{repo_name}-{ref}.zip',
+                           mimetype='application/zip')
+        
+        
+        os.unlink(temp_path)
+        
+        return response
+        
+    except Exception as e:
+        flash(f'error downloading: {str(e)}', 'error')
+        return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

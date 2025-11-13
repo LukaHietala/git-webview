@@ -385,3 +385,61 @@ def search_files(repo_path=None, query="", ref="HEAD"):
     except Exception as e:
         print(f"error searching files: {e}")
         return []
+    
+def search_code(repo_path=None, query="", ref="HEAD"):
+    try:
+        repo = git.Repo(repo_path)
+        
+        if not repo.bare or not query:
+            return []
+        
+        try:
+            commit = repo.commit(ref)
+        except:
+            if ref == "HEAD" and repo.heads:
+                ref = repo.heads[0].name
+                commit = repo.commit(ref)
+            else:
+                raise
+        
+        results = []
+        
+        # recursive tree traversal to search file contents, not even thinking about optimizations
+        def traverse_tree(tree, current_path=""):
+            for item in tree:
+                full_path = f"{current_path}/{item.name}" if current_path else item.name
+                if item.type == 'blob':
+                    try:
+                        # only search text files, skip binary files by exception
+                        blob_content = item.data_stream.read().decode('utf-8', errors='ignore')
+                        if query.lower() in blob_content.lower():
+                            # find the line numbers where the query appears
+                            lines = blob_content.split('\n')
+                            matching_lines = []
+                            for i, line in enumerate(lines, 1):
+                                if query.lower() in line.lower():
+                                    matching_lines.append({
+                                        'line_number': i,
+                                        'content': line.strip()
+                                    })
+                            
+                            results.append({
+                                "name": item.name,
+                                "path": full_path,
+                                "type": item.type,
+                                "size": item.size,
+                                "matching_lines": matching_lines 
+                            })
+                    except UnicodeDecodeError:
+                        # skip binary 
+                        pass
+                elif item.type == 'tree':
+                    traverse_tree(item, full_path)
+        
+        traverse_tree(commit.tree)
+        
+        return results
+        
+    except Exception as e:
+        print(f"error searching code: {e}")
+        return []

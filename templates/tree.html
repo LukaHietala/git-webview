@@ -4,76 +4,12 @@
 
 {% block content %}
 
-{% if search_results %}
-<h2>Search Results</h2>
-<div style="margin-top: 20px;">
-    <form method="GET" action="/{{ repo_name }}/tree">
-        <input type="text" name="query" value="{{ query }}" placeholder="search files...">
-        <input type="hidden" name="ref" value="{{ ref }}">
-        <button type="submit">Search</button>
-    </form>
-</div>
-
-{% if query %}
-<div style="margin-top: 20px;">
-    <p><strong>Results for "{{ query }}":</strong> {{ search_results|length }} file(s) found</p>
-    
-    {% if search_results %}
-    <table class="search-table">
-        <thead>
-            <tr>
-                <td class="name-col">Name</td>
-                <td class="path-col">Path</td>
-                <td class="type-col">Type</td>
-                <td class="size-col">Size</td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in search_results %}
-            <tr>
-                <td class="name-col">
-                    {% if item.type == 'tree' %}
-                        (dir) <a href="/{{ repo_name }}/tree/{{ item.path }}?ref={{ ref }}">{{ item.name }}</a>
-                    {% else %}
-                        (file) <a href="/{{ repo_name }}/blob/{{ item.path }}?ref={{ ref }}">{{ item.name }}</a>
-                    {% endif %}
-                </td>
-                <td class="path-col">{{ item.path }}</td>
-                <td class="type-col">{{ item.type }}</td>
-                <td class="size-col">
-                    {% if item.size is not none %}
-                        {{ item.size }} bytes
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No results found</p>
-    {% endif %}
-</div>
-{% endif %}
-
-{% else %}
-
 {% if tree %}
 <div>
     <a href="/{{ repo_name }}/tree?ref={{ ref }}">root</a>
     {% for part in path_parts %}
         / <a href="/{{ repo_name }}/tree/{{ part.path }}?ref={{ ref }}">{{ part.name }}</a>
     {% endfor %}
-</div>
-
-<!--TODO: maybe confusing to have two search forms-->
-<div style="margin-top: 20px;">
-    <form method="GET" action="/{{ repo_name }}/tree{% if current_path %}/{{ current_path }}{% endif %}">
-        <input type="text" name="query" value="" placeholder="search files...">
-        <input type="hidden" name="ref" value="{{ ref }}">
-        <button type="submit">Search</button>
-    </form>
 </div>
 
 <table>
@@ -95,9 +31,10 @@
                     <a href="/{{ repo_name }}/tree?ref={{ ref }}">..</a>
                 {% endif %}
             </td>
+            <td>parent</td>
+            <td>-</td>
         </tr>
         {% endif %}
-        <!--TODO: figure out what to use to indicate file or dir-->
         {% for item in tree.entries %}
         <tr>
             <td>
@@ -110,7 +47,7 @@
             <td>{{ item.type }}</td>
             <td>
                 {% if item.size is not none %}
-                    {{ item.size }} bytes <!--TODO: human readable-->
+                    {{ item.size }} bytes
                 {% else %}
                     -
                 {% endif %}
@@ -122,5 +59,5 @@
 {% else %}
 <p>No tree</p>
 {% endif %}
-{% endif %}
+
 {% endblock %}

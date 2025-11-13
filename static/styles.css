@@ -8,7 +8,7 @@ table thead td, table thead th {
 }
 
 a {
-	color: black;
+	color: blue;
 	text-decoration: none;
 }
 
@@ -217,6 +217,61 @@ table.search-table td.type-col {
 
 table.search-table td.size-col {
 	width: 10%;
+}
+
+/* code search results */
+.code-result-item {
+	margin-bottom: 15px;
+	border: 1px solid #ddd;
+}
+
+.code-result-header {
+	padding: 8px;
+	background-color: #f5f5f5;
+	border-bottom: 1px solid #ddd;
+}
+
+.code-result-header .path {
+	color: #666;
+	margin-left: 10px;
+	font-size: 12px;
+}
+
+.code-result-matches {
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.code-result-match {
+	display: flex;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.code-result-line-num {
+	width: 60px;
+	padding: 2px;
+	text-align: right;
+	color: #666;
+	background-color: #f5f5f5;
+	border-right: 1px solid #ddd;
+	font-family: monospace;
+	font-size: 12px;
+}
+
+.code-result-content {
+	padding: 2px;
+	font-family: monospace;
+	font-size: 12px;
+	flex: 1;
+	overflow-x: auto;
+}
+
+.code-result-footer {
+	padding: 6px;
+	background-color: #f5f5f5;
+	text-align: center;
+	font-size: 14px;
+	color: #666;
 }
 
 /* readme content styling */

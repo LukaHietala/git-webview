@@ -4,41 +4,121 @@
 
 {% block content %}
 
-<h2>Search Commits</h2>
+<h2>Search Repository</h2>
 
 <form method="GET" action="/{{ repo_name }}/search">
-    <input type="text" name="query" value="{{ query }}" placeholder="Search by author or commit message...">
+    <input type="text" name="query" value="{{ query }}" placeholder="Search...">
+    <select name="type">
+        <option value="commits" {% if search_type == 'commits' %}selected{% endif %}>Commits</option>
+        <option value="files" {% if search_type == 'files' %}selected{% endif %}>Files</option>
+        <option value="code" {% if search_type == 'code' %}selected{% endif %}>Code</option>
+    </select>
     <input type="hidden" name="ref" value="{{ ref if ref else 'HEAD' }}">
     <button type="submit">Search</button>
 </form>
 
 {% if query %}
 <div style="margin-top: 20px;">
-    <p><strong>Results for "{{ query }}":</strong> {{ results|length }} commit(s) found</p>
+    {% if search_type == 'commits' %}
+        <p><strong>Commit results for "{{ query }}":</strong> {{ results|length }} commit(s) found</p>
+        
+        {% if results %}
+        <table class="search-table">
+            <thead>
+                <tr>
+                    <td class="commit-col">Commit</td>
+                    <td class="author-col">Author</td>
+                    <td class="date-col">Date</td>
+                    <td class="message-col">Message</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commit in results %}
+                <tr>
+                    <td class="commit-col"><a href="/{{ repo_name }}/commit/{{ commit.hexsha }}">{{ commit.hexsha[:8] }}</a></td>
+                    <td class="author-col">{{ commit.author | highlight(query) | safe }}</td>
+                    <td class="date-col">{{ commit.date | age }}</td>
+                    <td class="message-col">{{ commit.message | highlight(query) | safe }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No commits found</p>
+        {% endif %}
     
-    {% if results %}
-    <table class="search-table">
-        <thead>
-            <tr>
-                <td class="commit-col">Commit</td>
-                <td class="author-col">Author</td>
-                <td class="date-col">Date</td>
-                <td class="message-col">Message</td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for commit in results %}
-            <tr>
-                <td class="commit-col"><a href="/{{ repo_name }}/commit/{{ commit.hexsha }}">{{ commit.hexsha[:8] }}</a></td>
-                <td class="author-col">{{ commit.author | highlight(query) | safe }}</td>
-                <td class="date-col">{{ commit.date | age }}</td>
-                <td class="message-col">{{ commit.message | highlight(query) | safe }}</td>
-            </tr>
+    {% elif search_type == 'files' %}
+        <p><strong>File results for "{{ query }}":</strong> {{ results|length }} file(s) found</p>
+        
+        {% if results %}
+        <table class="search-table">
+            <thead>
+                <tr>
+                    <td class="name-col">Name</td>
+                    <td class="path-col">Path</td>
+                    <td class="type-col">Type</td>
+                    <td class="size-col">Size</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in results %}
+                <tr>
+                    <td class="name-col">
+                        {% if item.type == 'tree' %}
+                            (dir) <a href="/{{ repo_name }}/tree/{{ item.path }}?ref={{ ref }}">{{ item.name }}</a>
+                        {% else %}
+                            (file) <a href="/{{ repo_name }}/blob/{{ item.path }}?ref={{ ref }}">{{ item.name }}</a>
+                        {% endif %}
+                    </td>
+                    <td class="path-col">{{ item.path }}</td>
+                    <td class="type-col">{{ item.type }}</td>
+                    <td class="size-col">
+                        {% if item.size is not none %}
+                            {{ item.size }} bytes
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No files found</p>
+        {% endif %}
+    
+    {% elif search_type == 'code' %}
+        <p><strong>Code results for "{{ query }}":</strong> {{ results|length }} file(s) found</p>
+        
+        {% if results %}
+        <div style="margin-top: 20px;">
+            {% for item in results %}
+            <div class="code-result-item">
+                <div class="code-result-header">
+                    <strong><a href="/{{ repo_name }}/blob/{{ item.path }}?ref={{ ref }}">{{ item.name }}</a></strong>
+                    <span class="path">{{ item.path }}</span>
+                </div>
+                <div class="code-result-matches">
+                    {% for match in item.matching_lines %}
+                    <div class="code-result-match">
+                        <div class="code-result-line-num">
+                            {{ match.line_number }}
+                        </div>
+                        <div class="code-result-content">
+                            <code>{{ match.content | highlight(query) | safe }}</code>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="code-result-footer">
+                    {{ item.matching_lines|length }} matches - <a href="/{{ repo_name }}/blob/{{ item.path }}?ref={{ ref }}">View full file</a>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p>No results found</p>
+        </div>
+        {% else %}
+        <p>No code matches found</p>
+        {% endif %}
     {% endif %}
 </div>
 {% endif %}

@@ -3,26 +3,21 @@
 <head>
     <title>{% block title %}Git Webview{% endblock %}</title>
     <link rel="stylesheet" href="/static/styles.css">
-    <style>
-        nav .current {
-            font-weight: bold;
-        }
-    </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body>
     {% if repo_name %}
     <h1>{{ repo_name }}</h1>
     <nav>
-        <a href="/{{ repo_name }}/{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if request.path.endswith('/' + repo_name + '/') or request.path == '/' + repo_name %}class="current"{% endif %}>Overview</a> |
-        <a href="/{{ repo_name }}/readme{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/readme' in request.path %}class="current"{% endif %}>README</a> |
-        <a href="/{{ repo_name }}/commits{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/commits' in request.path %}class="current"{% endif %}>Commits</a> |
-        <a href="/{{ repo_name }}/refs{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/refs' in request.path %}class="current"{% endif %}>Refs</a> |
-        <a href="/{{ repo_name }}/tree{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/tree' in request.path %}class="current"{% endif %}>Tree</a> |
-        <a href="/{{ repo_name }}/search{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/search' in request.path %}class="current"{% endif %}>Search</a> |
+        <a href="/{{ repo_name }}/{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if request.path.endswith('/' + repo_name + '/') or request.path == '/' + repo_name %}class="current"{% endif %}>Overview</a>
+        <a href="/{{ repo_name }}/readme{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/readme' in request.path %}class="current"{% endif %}>README</a>
+        <a href="/{{ repo_name }}/commits{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/commits' in request.path %}class="current"{% endif %}>Commits</a>
+        <a href="/{{ repo_name }}/refs{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/refs' in request.path %}class="current"{% endif %}>Refs</a>
+        <a href="/{{ repo_name }}/tree{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/tree' in request.path %}class="current"{% endif %}>Tree</a>
+        <a href="/{{ repo_name }}/search{% if ref and ref != 'HEAD' %}?ref={{ ref }}{% endif %}" {% if '/search' in request.path %}class="current"{% endif %}>Search</a>
         <a href="/" {% if request.path == '/' %}class="current"{% endif %}>Back</a>
         {% if branches or tags %}
-        <span style="float: right;">
+        <div class="branch-selector">
             <form method="GET" style="display: inline;">
                 <label>Branch/Tag:</label>
                 <select name="ref" onchange="this.form.submit()">
@@ -43,7 +38,7 @@
                     {% endif %}
                 </select>
             </form>
-        </span>
+        </div>
         {% endif %}
     </nav>
     

@@ -1,5 +1,31 @@
 body {
+	font-family: sans-serif;
 	margin: 20px;
+}
+
+nav {
+	margin: 10px 0;
+}
+
+nav a {
+	padding: 5px 10px;
+	margin-right: 5px;
+	text-decoration: none;
+	color: #383838;
+	background: #fff;
+}
+
+nav a.current {
+	background: #f0f0f0;
+	color: black;
+}
+
+nav a:hover {
+	color: #383838;
+}
+
+nav .branch-selector {
+	float: right;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -91,7 +117,7 @@ table.commits-table td.message-col {
 .diff-code {
 	margin: 0;
 	padding: 0;
-	font-family: monospace;
+	font-family: monospace !important;
 	font-size: 12px;
 	overflow-x: auto;
 }
@@ -145,7 +171,7 @@ table.commits-table td.message-col {
 	background-color: #f5f5f5;
 	border-right: 1px solid lightgray;
 	user-select: none;
-	font-family: monospace;
+	font-family: monospace !important;
 	font-size: 12px;
 }
 
@@ -157,7 +183,7 @@ table.commits-table td.message-col {
 .blob-code pre {
 	margin: 0;
 	padding: 0 10px;
-	font-family: monospace;
+	font-family: monospace !important;
 	font-size: 12px;
 	overflow: visible;
 }

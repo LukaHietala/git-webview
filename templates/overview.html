@@ -4,6 +4,13 @@
 
 {% block content %}
 
+<table>
+    <tr>
+        <td style="font-weight: bold; padding-right: 10px;">Clone:</td>
+        <td><a href="#" onclick="navigator.clipboard.writeText('{{ ssh_base_url }}/{{ repo_name }}')">{{ ssh_base_url }}/{{ repo_name }}</a></td>
+    </tr>
+</table>
+
 {% if commits %}
 <div class="recent-commits-section">
     <h3 style="margin-left: 8px;">Recent Commits</h3>

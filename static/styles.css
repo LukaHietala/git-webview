@@ -90,6 +90,36 @@ table.commits-table td.message-col {
 	white-space: nowrap;
 }
 
+table.repos-table {
+	width: 100%;
+	table-layout: fixed;
+}
+
+table.repos-table td {
+	white-space: nowrap;
+}
+
+table.repos-table td.name-col {
+	width: 15%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+table.repos-table td.desc-col {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+table.repos-table td.owner-col {
+	width: 20%;
+}
+
+table.repos-table td.last-updated-col {
+	width: 15%;
+}
+
+
 
 /* diffs */
 /* TODO: add more colors to text*/

@@ -19,13 +19,13 @@
 
     {% if repos %}
     <!--TODO: make own styles-->
-    <table class="commits-table">
+    <table class="repos-table">
         <thead>
             <tr>
-                <td class="message-col">Name</td>
-                <td class="author-col">Description</td>
-                <td class="age-col">Owner</td>
-                <td class="changes-col">Last Updated</td>
+                <td class="name-col">Name</td>
+                <td class="desc-col">Description</td>
+                <td class="owner-col">Owner</td>
+                <td class="last-updated-col">Last Updated</td>
                 {% if session.username %}
                 <td>Actions</td>
                 {% endif %}
@@ -34,10 +34,10 @@
         <tbody>
             {% for repo in repos %}
             <tr>
-                <td class="message-col"><a href="/{{ repo.name }}/">{{ repo.name }}</a></td>
-                <td class="author-col">{{ repo.description }}</td>
-                <td class="age-col">{{ repo.owner if repo.owner else '-' }}</td>
-                <td class="changes-col">{{ repo.last_updated | datetime if repo.last_updated else '-' }}</td>
+                <td class="name-col"><a href="/{{ repo.name }}/">{{ repo.name }}</a></td>
+                <td class="desc-col">{{ repo.description }}</td>
+                <td class="owner-col">{{ repo.owner if repo.owner else '-' }}</td>
+                <td class="last-updated-col">{{ repo.last_updated | datetime if repo.last_updated else '-' }}</td>
                 {% if session.username %}
                 <td>
                     <form method="POST" action="/add_owner/{{ repo.name }}" style="display:inline;">

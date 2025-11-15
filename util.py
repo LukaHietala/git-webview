@@ -30,7 +30,7 @@ def get_repos(repos_path=None):
                     if desc_file.exists():
                         try:
                             desc = desc_file.read_text().strip()
-                            if not desc.startswith("Unnamed"):
+                            if not desc.startswith("Unnamed") and not desc == "":
                                 repo_info["description"] = desc
                             else:
                                 repo_info["description"] = "-"

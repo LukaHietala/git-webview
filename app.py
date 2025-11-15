@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 from functools import wraps
-from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, search_commits, search_files, search_code
+from util import get_readme, get_repos, get_commits, get_commit, get_refs, get_tree, get_blob, create_bare_repo, set_repo_description, search_commits, search_files, search_code
 from pathlib import Path
 from datetime import datetime
 from db import init_db, verify_user, get_repo_info, set_repo_owner, get_all_users
@@ -325,6 +325,14 @@ def logout():
 @app.context_processor
 def inject_clone_url():
     return {'ssh_base_url': "git@wisdurm.fi:/srv/git"}
+
+@app.route('/edit_description/<repo_name>', methods=['POST'])
+@login_required
+def edit_description(repo_name):
+    description = request.form.get('description', '')
+    repo_path = repoRoot / repo_name
+    set_repo_description(str(repo_path), description)
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run()

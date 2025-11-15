@@ -18,14 +18,14 @@
     <hr>
 
     {% if repos %}
-    <table>
+    <!--TODO: make own styles-->
+    <table class="commits-table">
         <thead>
             <tr>
-                <td>Name</td>
-                <td>Description</td>
-                <td>Owner</td>
-                <td>Last Updated</td>
-                <td>Clone URL</td>
+                <td class="message-col">Name</td>
+                <td class="author-col">Description</td>
+                <td class="age-col">Owner</td>
+                <td class="changes-col">Last Updated</td>
                 {% if session.username %}
                 <td>Actions</td>
                 {% endif %}
@@ -34,11 +34,10 @@
         <tbody>
             {% for repo in repos %}
             <tr>
-                <td><a href="/{{ repo.name }}/">{{ repo.name }}</a></td>
-                <td>{{ repo.description }}</td>
-                <td>{{ repo.owner if repo.owner else '-' }}</td>
-                <td>{{ repo.last_updated | datetime if repo.last_updated else '-' }}</td>
-                <td><code>{{ ssh_base_url }}/{{ repo.name }}</code></td>
+                <td class="message-col"><a href="/{{ repo.name }}/">{{ repo.name }}</a></td>
+                <td class="author-col">{{ repo.description }}</td>
+                <td class="age-col">{{ repo.owner if repo.owner else '-' }}</td>
+                <td class="changes-col">{{ repo.last_updated | datetime if repo.last_updated else '-' }}</td>
                 {% if session.username %}
                 <td>
                     <form method="POST" action="/add_owner/{{ repo.name }}" style="display:inline;">
@@ -48,6 +47,11 @@
                                 <option value="{{ user }}">{{ user }}</option>
                             {% endfor %}
                         </select>
+                        <button type="submit" style="display:none;">Save</button>
+                    </form>
+                    <form method="POST" action="/edit_description/{{ repo.name }}" style="display:inline;">
+                        <button type="button" onclick="showDescriptionInput(this)">Edit Description</button>
+                        <input type="text" name="description" value="{{ repo.description }}" style="display:none;" placeholder="Enter description">
                         <button type="submit" style="display:none;">Save</button>
                     </form>
                 </td>
@@ -70,6 +74,16 @@
         select.style = 'display:inline;';
         saveButton.style = 'display:inline;';
         select.focus();
+    }
+
+    function showDescriptionInput(button) {
+        const form = button.closest('form');
+        button.style = 'display:none;';
+        const input = form.querySelector('input[name="description"]');
+        const saveButton = form.querySelector('button[type="submit"]');
+        input.style = 'display:inline;';
+        saveButton.style = 'display:inline;';
+        input.focus();
     }
 </script>
 </html>

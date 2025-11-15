@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import git
 
@@ -443,3 +442,13 @@ def search_code(repo_path=None, query="", ref="HEAD"):
     except Exception as e:
         print(f"error searching code: {e}")
         return []
+
+def set_repo_description(repo_path, description):
+    try:
+        repo_path = Path(repo_path)
+        desc_file = repo_path / "description"
+        desc_file.write_text(description)
+        return True
+    except Exception as e:
+        print(f"error setting description: {e}")
+        return False
